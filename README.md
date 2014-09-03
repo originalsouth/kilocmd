@@ -7,6 +7,9 @@ A command line interface for the Kilobots
 /* WARNING: DON'T RUN THIS PROGRAM THIS WILL DESTROY YOUR COMPUTER AND/OR KILOBOTS */
 /* Based (loosly) on kilogui by Alex Cornejo https://github.com/acornejo/kilogui */
 ```
+This project acknowledges:
+* [kilogui](https://github.com/acornejo/kilogui)
+* [libintelhex](https://github.com/bfoz/libintelhex)
 
 ## Building
 This program requires [libftdi](http://www.intra2net.com/en/developer/libftdi/index.php) (libftdi-devel,libftdi-c++-devel in Fedora 20). 
@@ -18,11 +21,10 @@ To clean run:
 ```
 make clean
 ```
-You can install this by copying the compiled binary to your path.
-
+You can install by copying the compiled binary to your path.
 
 ## Running
-Make sure you followed the instructions at [Kilobotics](https://www.kilobotics.com/documentation)  
+Make sure you have followed the instructions at [Kilobotics](https://www.kilobotics.com/documentation)  
 After compilation run something like:
 ```
 ./kilocmd --help
@@ -55,4 +57,8 @@ When you are done reading:
 ```
 ./kilocmd
 ```
-Should get you started.
+Should get you started.  
+If you are lazy try:
+```
+rlwrap ./kilocmd
+```
