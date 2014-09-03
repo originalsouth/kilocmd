@@ -97,7 +97,7 @@ void open()
                 ftdi_free(ftdic);
                 ftdic=nullptr;
             }
-            else if(!silent) puts("kilcmd: connected!");
+            else if(!silent) puts("kilocmd: connected!");
         }
     }
 }
@@ -216,7 +216,7 @@ void proccess(FILE *file)
         else if(!strcmp(strtokar(stroutel,' ',0),"STFU"))
         {
             silent=not silent;
-            if(!silent) puts("kilcmd: are we talking again?");
+            if(!silent) puts("kilocmd: are we talking again?");
         }
         else fprintf(stderr,"kilocmd: error parsing command \"%s\"\n",stroutel);
     }
