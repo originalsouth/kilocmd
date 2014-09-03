@@ -171,7 +171,7 @@ void send_program(const char *fname)
         if(!silent) puts("kilocmd: not connected to device...");
         return;
     }
-    if(!silent) printf("kilocmd: successfully uploaded \"%s\"\n!",fname);
+    if(!silent) printf("kilocmd: successfully uploaded \"%s\"!\n",fname);
 }
 
 char* strtokar(char *source,char delim,unsigned int pos)
