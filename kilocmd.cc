@@ -171,7 +171,7 @@ void send_program(const char *fname)
         if(!silent) puts("kilocmd: not connected to device...");
         return;
     }
-    if(!silent) printf("kilocmd: successfully uploaded \"%s\"!",fname);
+    if(!silent) printf("kilocmd: successfully uploaded \"%s\"\n!",fname);
 }
 
 char* strtokar(char *source,char delim,unsigned int pos)
@@ -268,7 +268,7 @@ int main(int argc,char *argv[])
             FILE *file=fopen(argv[1],"r");
             if(!file)
             {
-                fprintf(stderr,"kilocmd: unable to open file \"%s\"",argv[2]);
+                fprintf(stderr,"kilocmd: unable to open file \"%s\"\n",argv[1]);
                 return EXIT_FAILURE;
             }
             proccess(file);
@@ -292,7 +292,7 @@ int main(int argc,char *argv[])
         FILE *file=fopen(argv[2],"r");
         if(!file)
         {
-            fprintf(stderr,"kilocmd: unable to open file \"%s\"",argv[2]);
+            fprintf(stderr,"kilocmd: unable to open file \"%s\"\n",argv[2]);
             return EXIT_FAILURE;
         }
         proccess(file);
