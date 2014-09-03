@@ -166,7 +166,11 @@ void send_program(const char *fname)
             usleep(130000);
         }
     }
-    else if(!silent) puts("kilocmd: not connected to device...");
+    else
+    {
+        if(!silent) puts("kilocmd: not connected to device...");
+        return;
+    }
     if(!silent) printf("kilocmd: successfully uploaded \"%s\"!",fname);
 }
 
