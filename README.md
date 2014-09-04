@@ -7,11 +7,16 @@ A command line interface for the Kilobots
 /* WARNING: DON'T RUN THIS PROGRAM THIS WILL DESTROY YOUR COMPUTER AND/OR KILOBOTS */
 /* Based (loosly) on kilogui by Alex Cornejo https://github.com/acornejo/kilogui */
 ```
-This project acknowledges:
+This program acknowledges:
 * [kilogui](https://github.com/acornejo/kilogui)
+* [kilolib](https://github.com/acornejo/kilolib)
 * [libintelhex](https://github.com/bfoz/libintelhex)
+* [libftdi](http://www.intra2net.com/en/developer/libftdi/index.php)
+* [kilobotics](https://www.kilobotics.com/)  
+* [the kilobot project](http://www.eecs.harvard.edu/ssr/projects/progSA/kilobot.html) 
+* [Instituut Lorentz](http://www.lorentz.leidenuniv.nl/)
 
-## Building
+### Building
 This program requires [libftdi](http://www.intra2net.com/en/developer/libftdi/index.php) (libftdi-devel,libftdi-c++-devel in Fedora 20). 
 To build run something like:
 ```
@@ -23,8 +28,8 @@ make clean
 ```
 You can install by copying the compiled binary to your path.
 
-## Running
-Make sure you have followed the instructions at [Kilobotics](https://www.kilobotics.com/documentation)  
+### Running
+Make sure you have followed the instructions at [kilobotics](https://www.kilobotics.com/documentation)  
 After compilation run something like:
 ```
 ./kilocmd --help
@@ -61,4 +66,8 @@ Should get you started.
 If you are lazy try:
 ```
 rlwrap ./kilocmd
+```
+Or even more conviently:
+```
+rlwrap -c ./kilocmd
 ```
