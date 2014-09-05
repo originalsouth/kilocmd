@@ -15,6 +15,7 @@ struct ftdi_context *ftdic;
 intelhex::hex_data data;
 
 bool silent=false;
+bool autoconnect=true;
 
 char VOLTAGE[132]={};
 char PAUSE[132]={};
@@ -192,11 +193,40 @@ char* strtokar(char *source,char delim,unsigned int pos)
     return dest;
 }
 
+void help()
+{
+    puts("kilocmd: WILL DESTROY YOUR COMPUTER AND/OR KILOBOTS!");
+    puts("kilocmd: USE AT OWN RISK!\n");
+    puts("usage: kilocmd [options] \"filename\"");
+    puts("if no filename is provided stdin is used (use ^D to exit)");
+    puts("options:");
+    puts("\t-s or --stfu\tstartup in silent mode");
+    puts("\t-d or --disc\tstartup without connecting");
+    puts("\t-h or --help\tproduce this output");
+    puts("commands:");
+    puts("\tVOLTAGE\t\tdisplay voltage level using LED (blue/green=fully charged,yellow/red=need battery)");
+    puts("\tCHARGE\t\tswitch to charge mode");
+    puts("\tPAUSE\t\tpause the user program");
+    puts("\tRUN\t\truns the currently uploaded program");
+    puts("\tRESET\t\tjump to the user program starting point");
+    puts("\tSLEEP\t\tswitch to low-power sleep mode");
+    puts("\tTOGGLE\t\ttoggle LEDs on controller");
+    puts("\tSTOP\t\tsends an empty message");
+    puts("\tBOOTLOAD\tjump to bootloader mode to accept a new program");
+    puts("\tUPLOAD filename\tupload a new program to kilobots that are in bootloader mode");
+    puts("\tSTFU\t\ttoggle silent mode");
+    puts("\tHANG time\tstall for a bunch of miliseconds");
+    puts("\tHELP\t\tshow this output");
+    puts("\tCONNECT\t\tconnect to the overhead controller");
+    puts("\tDISCONNECT\tdisconnect from the overhead controller");
+}
+
 void proccess(FILE *file)
 {
     char stroutel[4096];
     init();
-    open();
+    if(autoconnect) open();
+    else if(!silent) puts("kilocmd: started without connecting");
     while(!feof(file))
     {
         stroutel[0]=0;
@@ -218,84 +248,57 @@ void proccess(FILE *file)
             silent=not silent;
             if(!silent) puts("kilocmd: are we talking again?");
         }
+        else if(!strcmp(strtokar(stroutel,' ',0),"HANG"))
+        {
+            int t=atoi(strtokar(stroutel,' ',1));
+            usleep(1000*t);
+            if(!silent) printf("kilocmd: hanged %d(ms)\n",t);
+        }
+        else if(!strcmp(strtokar(stroutel,' ',0),"HELP")) help();
+        else if(!strcmp(strtokar(stroutel,' ',0),"CONNECT")) open();
+        else if(!strcmp(strtokar(stroutel,' ',0),"DISCONNECT")) close();
         else fprintf(stderr,"kilocmd: error parsing command \"%s\"\n",stroutel);
     }
-    close();
-}
-
-void help()
-{
-    puts("kilocmd: WILL DESTROY YOUR COMPUTER AND/OR KILOBOTS!");
-    puts("kilocmd: USE AT OWN RISK!\n");
-    puts("usage: kilocmd [options] \"filename\"");
-    puts("if no filename is provided stdin is used (use ^D to exit)");
-    puts("options:");
-    puts("\t-s or --stfu\tstartup in silent mode");
-    puts("\t-h or --help\tproduce this output");
-    puts("commands:");
-    puts("\tVOLTAGE\t\tdisplay voltage level using LED (blue/green = fully charged, yellow/red = need battery)");
-    puts("\tCHARGE\t\tsets the kilobot in charge mode");
-    puts("\tPAUSE\t\tpause the user program");
-    puts("\tRUN\t\truns the currently uploaded program");
-    puts("\tRESET\t\tjump to the user program starting point");
-    puts("\tSLEEP\t\tswitch to low-power sleep mode");
-    puts("\tTOGGLE\t\ttoggle LEDs on controller");
-    puts("\tSTOP\t\tsends an empty message");
-    puts("\tBOOTLOAD\tjump to their bootloader to accept a new program");
-    puts("\tUPLOAD filename\tsend a new program to kilobots that are in bootloader mode");
-    puts("\tSTFU\t\ttoggle silent mode");
+    if(ftdic) close();
 }
 
 int main(int argc,char *argv[])
 {
+    bool pstdin=true;
     if(argc==1) proccess(stdin);
-    else if(argc==2)
+    else
     {
-        if(argv[1][0]=='-' and argv[1][1]=='s') silent=true;
-        else if(argv[1][0]=='-' and argv[1][1]=='-' and !strcmp(&argv[1][2],"stfu")) silent=true;
-        else if(argv[1][0]=='-' and argv[1][1]=='h')
+        for(int i=1;i<argc;i++)
         {
-            help();
-            return EXIT_SUCCESS;
-        }
-        else if(argv[1][0]=='-' and argv[1][1]=='-' and !strcmp(&argv[1][2],"help"))
-        {
-            help();
-            return EXIT_SUCCESS;
-        }
-        else
-        {
-            FILE *file=fopen(argv[1],"r");
-            if(!file)
+            if(argv[i][0]=='-')
             {
-                fprintf(stderr,"kilocmd: unable to open file \"%s\"\n",argv[1]);
-                return EXIT_FAILURE;
+                if(argv[i][1]=='s' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"stfu"))) silent=true;
+                else if(argv[i][1]=='d' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"disc"))) autoconnect=false;
+                else if(argv[i][1]=='h' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"help")))
+                {
+                    pstdin=false;
+                    help();
+                    break;
+                }
+                else
+                {
+                    fprintf(stderr,"kilocmd: \"%s\" is not a supported option\n",argv[i]);
+                    continue;
+                }
             }
-            proccess(file);
-            return EXIT_SUCCESS;
+            else
+            {
+                pstdin=false;
+                FILE *file=fopen(argv[i],"r");
+                if(!file)
+                {
+                    fprintf(stderr,"kilocmd: unable to open file \"%s\"\n",argv[i]);
+                    continue;
+                }
+                proccess(file);
+            }
         }
-        proccess(stdin);
-    }
-    else if(argc==3)
-    {
-        if(argv[1][0]=='-' and argv[1][1]=='s') silent=true;
-        else if(argv[1][0]=='-' and argv[1][1]=='h')
-        {
-            help();
-            return EXIT_SUCCESS;
-        }
-        else if(argv[1][0]=='-' and argv[1][1]=='-' and !strcmp(&argv[1][2],"help"))
-        {
-            help();
-            return EXIT_SUCCESS;
-        }
-        FILE *file=fopen(argv[2],"r");
-        if(!file)
-        {
-            fprintf(stderr,"kilocmd: unable to open file \"%s\"\n",argv[2]);
-            return EXIT_FAILURE;
-        }
-        proccess(file);
+        if(pstdin) proccess(stdin);
     }
     return EXIT_SUCCESS;
 }
