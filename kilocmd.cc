@@ -219,6 +219,7 @@ void help()
     puts("\tHELP\t\tshow this output");
     puts("\tCONNECT\t\tconnect to the overhead controller");
     puts("\tDISCONNECT\tdisconnect from the overhead controller");
+    puts("lines starting with # are ignored");
 }
 
 void proccess(FILE *file)
@@ -231,6 +232,7 @@ void proccess(FILE *file)
     {
         stroutel[0]=0;
         fgets(stroutel,4096,file);
+        if(stroutel[0]=='#') continue;
         for(size_t i=0;i<strlen(stroutel);i++) if(stroutel[i]=='\n') stroutel[i]=0;
         if(!strcmp(stroutel,"\0")) continue;
         else if(!strcmp(strtokar(stroutel,' ',0),"VOLTAGE")) send_cmd(VOLTAGE);

@@ -61,6 +61,7 @@ commands:
 	HELP		show this output
 	CONNECT		connect to the overhead controller
 	DISCONNECT	disconnect from the overhead controller
+lines starting with a # are ignored
 ```
 When you are done reading:
 ```
