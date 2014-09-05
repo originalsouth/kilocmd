@@ -43,20 +43,24 @@ usage: kilocmd [options] "filename"
 if no filename is provided stdin is used (use ^D to exit)
 options:
 	-s or --stfu	startup in silent mode
+	-d or --disc	startup without connecting
 	-h or --help	produce this output
 commands:
-	VOLTAGE		    display voltage level using LED (blue/green = fully charged, yellow/red = need battery)
-	CHARGE		    sets the kilobot in charge mode
-	PAUSE		    pause the user program
-	RUN		        runs the currently uploaded program
-	RESET		    jump to the user program starting point
-	SLEEP		    switch to low-power sleep mode
-	TOGGLE		    toggle LEDs on controller
-	STOP		    sends an empty message
-	BOOTLOAD	    jump to their bootloader to accept a new program
-	UPLOAD filename	send a new program to kilobots that are in bootloader mode
-	STFU		    toggle silent mode
-
+	VOLTAGE		display voltage level using LED (blue/green=fully charged,yellow/red=need battery)
+	CHARGE		switch to charge mode
+	PAUSE		pause the user program
+	RUN		runs the currently uploaded program
+	RESET		jump to the user program starting point
+	SLEEP		switch to low-power sleep mode
+	TOGGLE		toggle LEDs on controller
+	STOP		sends an empty message
+	BOOTLOAD	jump to bootloader mode to accept a new program
+	UPLOAD filename	upload a new program to kilobots that are in bootloader mode
+	STFU		toggle silent mode
+	HANG time	stall for a bunch of miliseconds
+	HELP		show this output
+	CONNECT		connect to the overhead controller
+	DISCONNECT	disconnect from the overhead controller
 ```
 When you are done reading:
 ```
